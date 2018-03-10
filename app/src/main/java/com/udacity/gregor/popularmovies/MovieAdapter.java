@@ -1,0 +1,85 @@
+package com.udacity.gregor.popularmovies;
+
+import android.content.Context;
+import android.media.Image;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+import com.udacity.gregor.popularmovies.model.Movie;
+import com.udacity.gregor.popularmovies.utils.JsonUtils;
+
+/**
+ * Created by Gregor on 20.02.2018.
+ */
+
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
+
+    private String[] mImagePosterPaths;
+    private MovieAdapterOnClickHandler mClickHandler;
+
+
+    public interface MovieAdapterOnClickHandler{
+        void onClick(Movie posterMovie);
+    }
+
+
+    MovieAdapter(String[] posterPaths, MovieAdapterOnClickHandler handler){
+        mImagePosterPaths = posterPaths;
+        mClickHandler = handler;
+    }
+
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+        ImageView mMoviePoster;
+
+        MovieAdapterViewHolder(View itemView) {
+            super(itemView);
+            mMoviePoster = itemView.findViewById(R.id.iv_poster);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            Movie posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonString,adapterPosition);
+            mClickHandler.onClick(posterMovie);
+        }
+    }
+
+    @Override
+    public MovieAdapter.MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        int layoutId = R.layout.grid_item_view;
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
+
+
+        View view = layoutInflater.inflate(layoutId, parent, shouldAttachToParentImmediately);
+        return new MovieAdapterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(MovieAdapter.MovieAdapterViewHolder holder, int position) {
+        String posterPath = mImagePosterPaths[position];
+        Context context = holder.mMoviePoster.getContext();
+        Picasso.with(context)
+                .load(MainActivity.BASE_URL + MainActivity.SIZE_POSTER + posterPath)
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_background)
+                .into(holder.mMoviePoster);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return mImagePosterPaths.length;
+    }
+
+
+
+}

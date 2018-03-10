@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_columnSpan="2"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.udacity.gregor.popularmovies.MainActivity"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_movies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+</GridLayout>

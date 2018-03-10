@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="default_popular">true</bool>
+    <bool name="default_best_rated">false</bool>
+</resources>
