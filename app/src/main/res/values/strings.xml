@@ -7,6 +7,19 @@
     <string name="detail_release_date_label">Release Date: </string>
     <string name="detail_overview_label">Overview: </string>
     <string name="detail_vote_count_label">Vote Count: </string>
+    <string name="detail_intent_key">MoviePoster</string>
+
+    <style name="label_style">
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="details_style">
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 
     <!-- Preferences -->
     <string name="pref_popular_label">Most popular</string>

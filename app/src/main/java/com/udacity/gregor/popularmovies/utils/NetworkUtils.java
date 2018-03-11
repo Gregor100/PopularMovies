@@ -24,8 +24,9 @@ public class NetworkUtils {
 
 
     static URL buildUrl(String apiString) {
-        Uri builtUri = Uri.parse(apiString)
-                .buildUpon()
+        Uri.Builder builder =  Uri.parse(apiString)
+                .buildUpon();
+        Uri builtUri = builder
                 .build();
 
         URL url = null;
