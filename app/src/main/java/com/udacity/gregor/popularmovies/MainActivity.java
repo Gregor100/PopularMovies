@@ -38,7 +38,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements LoaderCallbacks<String[]>, MovieAdapter.MovieAdapterOnClickHandler{
+public class MainActivity extends AppCompatActivity implements LoaderCallbacks<String[]>,
+        MovieAdapter.MovieAdapterOnClickHandler{
 
     public static final int SPAN_COUNT_GRID = 2;
     public static final int POSTER_LOADER_ID = 2323;
@@ -54,9 +55,13 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     public static final int releaseDatePosition = 2;
     public static final int posterPathPosition = 3;
     public static final int synopsisPosition = 4;
+    public static final int idPosition = 5;
+
+    public static final int NUMBER_OF_INTENT_DETAILS = 6;
 
     public static final String BASE_API = "http://api.themoviedb.org/3/movie/";
     public static final String API_KEY = BuildConfig.API_KEY;
+    public static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v=";
 
 
 
@@ -172,12 +177,14 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     public void onClick(com.udacity.gregor.popularmovies.model.Movie posterMovie) {
         Class destinationClass = DetailActivity.class;
         Intent movieDetailIntent = new Intent(MainActivity.this, destinationClass);
-        String[] intentData = new String[5];
+        String[] intentData = new String[NUMBER_OF_INTENT_DETAILS];
         intentData[titlePosition] = posterMovie.getMovieTitle();
         intentData[voteCountPosition] = Integer.toString(posterMovie.getVoteCount());
         intentData[releaseDatePosition] = posterMovie.getReleaseDate();
         intentData[posterPathPosition] = posterMovie.getPosterPath();
         intentData[synopsisPosition] = posterMovie.getSynopsis();
+        Log.i("posterMovieId", posterMovie.getId());
+        intentData[idPosition] = posterMovie.getId();
         movieDetailIntent.putExtra(Intent.EXTRA_TEXT,intentData);
         startActivity(movieDetailIntent);
     }

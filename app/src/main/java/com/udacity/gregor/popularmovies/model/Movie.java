@@ -17,13 +17,15 @@ public class Movie implements Parcelable {
     private String releaseDate;
     private String posterPath;
     private String synopsis;
+    private String id;
 
-    public Movie(String title, int voteCount, String releaseDate, String posterPath, String synopsis){
+    public Movie(String title, int voteCount, String releaseDate, String posterPath, String synopsis, String id){
         this.voteCount = voteCount;
         this.title = title;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
         this.synopsis = synopsis;
+        this.id = id;
     }
 
     public int getVoteCount(){
@@ -46,14 +48,20 @@ public class Movie implements Parcelable {
         return synopsis;
     }
 
+    public String getId(){
+        return id;
+    }
+
+
     private Movie(Parcel input){
-        String[] details = new String[5];
+        String[] details = new String[MainActivity.NUMBER_OF_INTENT_DETAILS];
         input.readStringArray(details);
         title = details[MainActivity.titlePosition];
         releaseDate = details[MainActivity.releaseDatePosition];
         synopsis = details[MainActivity.synopsisPosition];
         voteCount = Integer.parseInt(details[MainActivity.voteCountPosition]);
         posterPath = details[MainActivity.posterPathPosition];
+        id = details[MainActivity.idPosition];
     }
 
 
@@ -68,7 +76,8 @@ public class Movie implements Parcelable {
         Integer.toString(voteCount),
         releaseDate,
         posterPath,
-        synopsis});
+        synopsis,
+        id});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){

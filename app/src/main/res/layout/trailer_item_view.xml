@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <ImageView
+        android:src="@drawable/youtubesign"
+        android:id="@+id/iv_youtube_sign"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="@dimen/youtube_sign_size"
+        android:layout_height="@dimen/youtube_sign_size"
+        android:layout_margin="@dimen/margin_side"/>
+
+    <TextView
+        android:id="@+id/tv_trailer_name"
+        app:layout_constraintLeft_toRightOf="@+id/iv_youtube_sign"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_youtube_sign"
+        tools:text="@string/trailer_view_text_tool"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
+</android.support.constraint.ConstraintLayout>

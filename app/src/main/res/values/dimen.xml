@@ -2,4 +2,5 @@
 <resources>
     <dimen name="margin_side">10dp</dimen>
     <dimen name="detail_image_height">200dp</dimen>
+    <dimen name="youtube_sign_size">60dp</dimen>
 </resources>
