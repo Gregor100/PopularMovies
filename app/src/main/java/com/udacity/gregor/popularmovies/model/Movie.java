@@ -12,15 +12,15 @@ import com.udacity.gregor.popularmovies.MainActivity;
 
 
 public class Movie implements Parcelable {
-    private int voteCount;
+    private double voteAverage;
     private String title;
     private String releaseDate;
     private String posterPath;
     private String synopsis;
     private String id;
 
-    public Movie(String title, int voteCount, String releaseDate, String posterPath, String synopsis, String id){
-        this.voteCount = voteCount;
+    public Movie(String title, double voteAverage, String releaseDate, String posterPath, String synopsis, String id){
+        this.voteAverage = voteAverage;
         this.title = title;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
@@ -28,8 +28,8 @@ public class Movie implements Parcelable {
         this.id = id;
     }
 
-    public int getVoteCount(){
-        return voteCount;
+    public double getVoteAverage(){
+        return voteAverage;
     }
 
     public String getMovieTitle(){
@@ -59,7 +59,7 @@ public class Movie implements Parcelable {
         title = details[MainActivity.titlePosition];
         releaseDate = details[MainActivity.releaseDatePosition];
         synopsis = details[MainActivity.synopsisPosition];
-        voteCount = Integer.parseInt(details[MainActivity.voteCountPosition]);
+        voteAverage = Double.parseDouble(details[MainActivity.voteAveragePosition]);
         posterPath = details[MainActivity.posterPathPosition];
         id = details[MainActivity.idPosition];
     }
@@ -73,7 +73,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeStringArray(new String[]{title,
-        Integer.toString(voteCount),
+        Double.toString(voteAverage),
         releaseDate,
         posterPath,
         synopsis,

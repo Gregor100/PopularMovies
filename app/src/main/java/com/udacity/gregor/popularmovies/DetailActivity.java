@@ -3,6 +3,8 @@ package com.udacity.gregor.popularmovies;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -33,8 +38,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     @InjectView(R.id.tv_overview)
     TextView overview;
 
-    @InjectView(R.id.tv_vote_count)
-    TextView voteCount;
+    @InjectView(R.id.tv_vote_average)
+    TextView voteAverage;
 
     @InjectView(R.id.tv_release_date)
     TextView releaseDate;
@@ -69,12 +74,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
             intentData = mainToDetailIntent.getStringArrayExtra(Intent.EXTRA_TEXT);
             String titleString = intentData[MainActivity.titlePosition];
             String overviewString = intentData[MainActivity.synopsisPosition];
-            String voteCountString = intentData[MainActivity.voteCountPosition];
+            String voteAverageString = intentData[MainActivity.voteAveragePosition];
             String posterPathString = intentData[MainActivity.posterPathPosition];
             String releaseDateString = intentData[MainActivity.releaseDatePosition];
             title.setText(titleString);
             overview.setText(overviewString);
-            voteCount.setText(voteCountString);
+            voteAverage.setText(voteAverageString);
             releaseDate.setText(releaseDateString);
             Picasso.with(this)
                     .load(MainActivity.BASE_URL + MainActivity.SIZE_POSTER +
@@ -109,6 +114,29 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         getSupportLoaderManager().destroyLoader(TRAILER_LOADER_ID);
         getSupportLoaderManager().destroyLoader(REVIEW_LOADER_ID);
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.detail_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_favorite){
+            if(item.getIcon().getConstantState().equals(getDrawable(R.drawable.empty_star).getConstantState())) {
+                item.setIcon(R.drawable.full_star);
+                Log.i("Info", "Favorite marked");
+            }else if (item.getIcon().getConstantState().equals(getDrawable(R.drawable.full_star).getConstantState())){
+                item.setIcon(R.drawable.empty_star);
+                Log.i("Info", "Favorite unmarked");
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressLint("StaticFieldLeak")

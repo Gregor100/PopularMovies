@@ -31,7 +31,7 @@ import java.util.Arrays;
 
 public class JsonUtils{
     private static final String JSON_RESULTS_KEY = "results";
-    private static final String JSON_VOTE_COUNT_KEY = "vote_count";
+    private static final String JSON_VOTE_Average_KEY = "vote_average";
     private static final String JSON_TITLE_KEY = "original_title";
     private static final String JSON_RELEASE_DATE_KEY = "release_date";
     private static final String JSON_POSTER_PATH_KEY = "poster_path";
@@ -87,7 +87,7 @@ public class JsonUtils{
     public static Movie getPosterMovie(String json, int jsonPosition) {
         Movie returnMovie;
         String id = null;
-        int voteCount = 0;
+        Double voteAverage = 0.0;
         String title = null;
         String releaseDate = null;
         String posterPath = null;
@@ -102,7 +102,7 @@ public class JsonUtils{
 
             id = resultsJsonMovie.getString(JSON_ID_KEY);
             title = resultsJsonMovie.getString(JSON_TITLE_KEY);
-            voteCount = resultsJsonMovie.getInt(JSON_VOTE_COUNT_KEY);
+            voteAverage = resultsJsonMovie.getDouble(JSON_VOTE_Average_KEY);
             releaseDate = resultsJsonMovie.getString(JSON_RELEASE_DATE_KEY);
             posterPath = resultsJsonMovie.getString(JSON_POSTER_PATH_KEY);
             synopsis = resultsJsonMovie.getString(JSON_SYNOPSIS_KEY);
@@ -111,7 +111,7 @@ public class JsonUtils{
         }
 
         returnMovie = new Movie(title,
-                voteCount,
+                voteAverage,
                 releaseDate,
                 posterPath,
                 synopsis,

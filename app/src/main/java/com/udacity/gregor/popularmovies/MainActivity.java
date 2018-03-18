@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     public static final int NUMBER_OF_SHOWN_RESULTS = 20;
 
     public static final int titlePosition = 0;
-    public static final int voteCountPosition = 1;
+    public static final int voteAveragePosition = 1;
     public static final int releaseDatePosition = 2;
     public static final int posterPathPosition = 3;
     public static final int synopsisPosition = 4;
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
         Intent movieDetailIntent = new Intent(MainActivity.this, destinationClass);
         String[] intentData = new String[NUMBER_OF_INTENT_DETAILS];
         intentData[titlePosition] = posterMovie.getMovieTitle();
-        intentData[voteCountPosition] = Integer.toString(posterMovie.getVoteCount());
+        intentData[voteAveragePosition] = Double.toString(posterMovie.getVoteAverage());
         intentData[releaseDatePosition] = posterMovie.getReleaseDate();
         intentData[posterPathPosition] = posterMovie.getPosterPath();
         intentData[synopsisPosition] = posterMovie.getSynopsis();
