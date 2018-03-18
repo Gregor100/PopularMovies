@@ -1,6 +1,8 @@
 package com.udacity.gregor.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +10,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.udacity.gregor.popularmovies.utils.JsonUtils;
+
 /**
  * Created by Gregor on 16.03.2018.
  */
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder>{
     private String[] mTrailers = null;
+    private TrailerAdapterOnClickHandler mClickHandler = null;
+    private Context mContext;
 
-    TrailerAdapter(String trailers[]){
+    TrailerAdapter(Context context, String trailers[], TrailerAdapterOnClickHandler handler){
         mTrailers = trailers;
+        mContext = context;
+        mClickHandler = handler;
+    }
+
+    public interface TrailerAdapterOnClickHandler{
+        void onClick(Uri uri);
     }
 
     @Override
@@ -40,18 +52,31 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
     @Override
     public int getItemCount() {
-        return mTrailers.length;
+        if(mTrailers != null) {
+            return mTrailers.length;
+        }else{
+            return 0;
+        }
     }
 
 
-    public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder{
+    public class TrailerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView youtubeSign;
         TextView trailerName;
-        public TrailerAdapterViewHolder(View itemView) {
+
+        TrailerAdapterViewHolder(View itemView) {
             super(itemView);
             youtubeSign = itemView.findViewById(R.id.iv_youtube_sign);
             trailerName = itemView.findViewById(R.id.tv_trailer_name);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            Uri uri = JsonUtils.getPosterTrailerUri(JsonUtils.keys[adapterPosition]);
+            mClickHandler.onClick(uri);
         }
     }
 }

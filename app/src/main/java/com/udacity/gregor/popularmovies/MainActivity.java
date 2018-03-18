@@ -84,17 +84,14 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
                 SPAN_COUNT_GRID);
         moviesRecyclerView.setLayoutManager(gridLayoutManager);
         moviesRecyclerView.setHasFixedSize(true);
-        getSupportLoaderManager().initLoader(POSTER_LOADER_ID,null, callback);
-        getSupportLoaderManager().restartLoader(POSTER_LOADER_ID, null, callback);
-
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         getSupportLoaderManager().destroyLoader(POSTER_LOADER_ID);
         getSupportLoaderManager().initLoader(POSTER_LOADER_ID, null, callback);
         getSupportLoaderManager().restartLoader(POSTER_LOADER_ID, null, callback);
-        super.onStart();
+        super.onResume();
     }
 
 

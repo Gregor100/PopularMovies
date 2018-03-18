@@ -39,8 +39,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     @Override
     public int getItemCount() {
-        Log.i("mReviews count", Integer.toString(mReviews.length));
-        return mReviews.length;
+        if(mReviews != null) {
+            return mReviews.length;
+        }else{
+            return 0;
+        }
     }
 
     public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder{

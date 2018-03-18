@@ -43,6 +43,7 @@ public class JsonUtils{
 
     public static String apiString;
     public static String requestJsonString;
+    public static String[] keys;
 
     private static URL requestUrl = null;
 
@@ -120,7 +121,7 @@ public class JsonUtils{
     }
 
     public static String[] getPosterTrailerKeys(Context context, String movieId){
-        String[] keys = null;
+        keys = null;
         apiString = MainActivity.BASE_API
                 + movieId
                 + context.getResources().getString(R.string.api_part_trailers)
@@ -147,7 +148,7 @@ public class JsonUtils{
         return keys;
     }
 
-    public static Uri getPosterTrailerUri(Context context, String trailerKey){
+    public static Uri getPosterTrailerUri(String trailerKey){
         apiString = MainActivity.YOUTUBE_BASE_URL
                 + trailerKey;
         Uri uri = Uri.parse(apiString);
@@ -155,9 +156,8 @@ public class JsonUtils{
         return uri;
     }
 
-    public static void openTrailer(Uri uri, Context context){
-        Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-
+    public static void openTrailer(Context context,Uri uri){
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         if(intent.resolveActivity(context.getPackageManager())!= null){
             context.startActivity(intent);
         }
