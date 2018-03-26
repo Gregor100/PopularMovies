@@ -1,10 +1,9 @@
 package com.udacity.gregor.popularmovies;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
@@ -20,17 +19,30 @@ import android.widget.TextView;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.gregor.popularmovies.data.DatabaseUtils;
+import com.udacity.gregor.popularmovies.data.FavoriteMoviesDbHelper;
+import com.udacity.gregor.popularmovies.model.Movie;
 import com.udacity.gregor.popularmovies.utils.JsonUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import com.udacity.gregor.popularmovies.data.FavoriteMoviesContract;
+
 public class DetailActivity extends AppCompatActivity implements LoaderCallbacks<String[]>,
         TrailerAdapter.TrailerAdapterOnClickHandler {
 
+    public static SQLiteDatabase mDatabase;
     String[] intentData;
+    String posterPathString;
+    String idString;
+    static ContentValues contentValues = new ContentValues();
     public static final int REVIEW_LOADER_ID = 5656;
     public static final int TRAILER_LOADER_ID = 7878;
+
+    Movie detailMovie;
+
+    Menu menu;
 
     @InjectView(R.id.iv_poster_detail)
     ImageView detailPoster;
@@ -44,7 +56,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     @InjectView(R.id.tv_release_date)
     TextView releaseDate;
 
-    @InjectView(R.id.tv_original_title)
+    @InjectView(R.id.tv_title)
     TextView title;
 
     @InjectView(R.id.recyclerview_reviews)
@@ -60,6 +72,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     TrailerAdapter mTrailerAdapter;
     String[] keys = null;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +81,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
 
         ButterKnife.inject(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent mainToDetailIntent = getIntent();
         if(mainToDetailIntent.hasExtra(Intent.EXTRA_TEXT)){
             intentData = mainToDetailIntent.getStringArrayExtra(Intent.EXTRA_TEXT);
+            idString = intentData[MainActivity.idPosition];
             String titleString = intentData[MainActivity.titlePosition];
             String overviewString = intentData[MainActivity.synopsisPosition];
             String voteAverageString = intentData[MainActivity.voteAveragePosition];
-            String posterPathString = intentData[MainActivity.posterPathPosition];
+            posterPathString = intentData[MainActivity.posterPathPosition];
             String releaseDateString = intentData[MainActivity.releaseDatePosition];
             title.setText(titleString);
             overview.setText(overviewString);
@@ -97,15 +112,21 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
 
         RecyclerView.LayoutManager trailerLayoutManager = new LinearLayoutManager(this);
         trailersRecyclerView.setLayoutManager(trailerLayoutManager);
+
+        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this, null);
+
+        mDatabase = dbHelper.getWritableDatabase();
     }
 
     @Override
     protected void onResume() {
+
         getSupportLoaderManager().initLoader(TRAILER_LOADER_ID, null, callback);
         getSupportLoaderManager().restartLoader(TRAILER_LOADER_ID, null, callback);
 
         getSupportLoaderManager().initLoader(REVIEW_LOADER_ID, null, callback);
         getSupportLoaderManager().restartLoader(REVIEW_LOADER_ID, null, callback);
+
         super.onResume();
     }
 
@@ -120,19 +141,33 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.detail_menu, menu);
+        if(!DatabaseUtils.movieIsFavorite(idString, mDatabase,
+                FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
+                FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
+            menu.findItem(R.id.action_favorite).setIcon(R.drawable.empty_star);
+        }else if(DatabaseUtils.movieIsFavorite(idString, mDatabase,
+                FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
+                FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
+            menu.findItem(R.id.action_favorite).setIcon(R.drawable.full_star);
+        }
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.action_favorite){
-            if(item.getIcon().getConstantState().equals(getDrawable(R.drawable.empty_star).getConstantState())) {
+            if(!DatabaseUtils.movieIsFavorite(idString, mDatabase,
+                    FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
+                    FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
                 item.setIcon(R.drawable.full_star);
-                Log.i("Info", "Favorite marked");
-            }else if (item.getIcon().getConstantState().equals(getDrawable(R.drawable.full_star).getConstantState())){
+                DatabaseUtils.addMovieToFavorites(detailMovie, mDatabase, contentValues);
+            }else if(DatabaseUtils.movieIsFavorite(idString, mDatabase,
+                    FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
+                    FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
                 item.setIcon(R.drawable.empty_star);
-                Log.i("Info", "Favorite unmarked");
+                DatabaseUtils.removeMovieFromFavorites(detailMovie, mDatabase);
             }
             return true;
         }
@@ -156,7 +191,8 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
 
                 @Override
                 public String[] loadInBackground() {
-                    return JsonUtils.getPosterMovieReviews(DetailActivity.this, intentData[MainActivity.idPosition]);
+                    detailMovie = JsonUtils.getMovieById(idString);
+                    return JsonUtils.getPosterMovieReviews(DetailActivity.this, idString);
                 }
 
                 @Override
@@ -180,7 +216,7 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
 
                 @Override
                 public String[] loadInBackground() {
-                    return JsonUtils.getPosterTrailerKeys(DetailActivity.this, intentData[MainActivity.idPosition]);
+                    return JsonUtils.getPosterTrailerKeys(DetailActivity.this, idString);
                 }
 
                 @Override

@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.gregor.popularmovies.data.DatabaseUtils;
 import com.udacity.gregor.popularmovies.model.Movie;
 import com.udacity.gregor.popularmovies.utils.JsonUtils;
+
+import org.json.JSONObject;
 
 /**
  * Created by Gregor on 20.02.2018.
@@ -46,7 +49,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Movie posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonString,adapterPosition);
+            Movie posterMovie;
+            if(MainActivity.MOST_POPULAR) {
+                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringMostPopular, adapterPosition);
+            } else if(MainActivity.BEST_RATED){
+                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringBestRated, adapterPosition);
+            } else{
+                String[] idsFromFavorites = JsonUtils.getPosterIdsFromFavorites(mMoviePoster.getContext());
+                String id = idsFromFavorites[adapterPosition];
+                posterMovie = JsonUtils.getMovieById(id);
+            }
             mClickHandler.onClick(posterMovie);
         }
     }
@@ -69,8 +81,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Context context = holder.mMoviePoster.getContext();
         Picasso.with(context)
                 .load(MainActivity.BASE_URL + MainActivity.SIZE_POSTER + posterPath)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_launcher_background)
+       //         .error(R.drawable.ic_launcher_background)
                 .into(holder.mMoviePoster);
 
     }

@@ -36,12 +36,22 @@ public class SettingsActivity extends AppCompatActivity {
                 if(checked){
                     MainActivity.MOST_POPULAR = true;
                     MainActivity.BEST_RATED = false;
+                    MainActivity.SHOW_FAVORITES = false;
                 }
                 break;
             case R.id.radio_best_rated:
                 if(checked){
                     MainActivity.BEST_RATED = true;
                     MainActivity.MOST_POPULAR = false;
+                    MainActivity.SHOW_FAVORITES = false;
+                }
+                break;
+
+            case R.id.radio_favorites:
+                if (checked) {
+                    MainActivity.SHOW_FAVORITES = true;
+                    MainActivity.MOST_POPULAR = false;
+                    MainActivity.BEST_RATED = false;
                 }
                 break;
         }

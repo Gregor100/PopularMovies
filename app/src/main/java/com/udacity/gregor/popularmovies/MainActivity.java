@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     public static final String SIZE_POSTER = "w185/";
     public static boolean MOST_POPULAR = true;
     public static boolean BEST_RATED = false;
+    public static boolean SHOW_FAVORITES = false;
     public static final int NUMBER_OF_SHOWN_RESULTS = 20;
 
     public static final int titlePosition = 0;
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
         Intent movieDetailIntent = new Intent(MainActivity.this, destinationClass);
         String[] intentData = new String[NUMBER_OF_INTENT_DETAILS];
         intentData[titlePosition] = posterMovie.getMovieTitle();
+        Log.i("posterMovieTitle",posterMovie.getMovieTitle());
         intentData[voteAveragePosition] = Double.toString(posterMovie.getVoteAverage());
         intentData[releaseDatePosition] = posterMovie.getReleaseDate();
         intentData[posterPathPosition] = posterMovie.getPosterPath();

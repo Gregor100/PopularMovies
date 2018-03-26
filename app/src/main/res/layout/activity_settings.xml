@@ -14,5 +14,11 @@
             android:layout_height="wrap_content"
             android:text="@string/pref_best_rated_label"
             android:onClick="onRadioButtonClicked"/>
+        <RadioButton
+            android:id="@+id/radio_favorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pref_favorites_label"
+            android:onClick="onRadioButtonClicked"/>
 </RadioGroup>
 
