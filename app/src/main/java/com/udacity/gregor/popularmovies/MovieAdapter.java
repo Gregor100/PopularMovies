@@ -55,9 +55,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             } else if(MainActivity.BEST_RATED){
                 posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringBestRated, adapterPosition);
             } else{
-                String[] idsFromFavorites = JsonUtils.getPosterIdsFromFavorites(mMoviePoster.getContext());
+                posterMovie = MainActivity.favorites[adapterPosition];
+           /*     String[] idsFromFavorites;
+                idsFromFavorites = JsonUtils.getPosterIdsFromFavorites(mMoviePoster.getContext());
                 String id = idsFromFavorites[adapterPosition];
                 posterMovie = JsonUtils.getMovieById(id);
+                Log.i("movieTitle", posterMovie.getMovieTitle());
+                */
             }
             mClickHandler.onClick(posterMovie);
         }

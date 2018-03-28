@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     MovieAdapter mMovieAdapter;
     RecyclerView moviesRecyclerView;
     String[] posterPaths = null;
+    public static String[] ids = null;
+    public static com.udacity.gregor.popularmovies.model.Movie[] favorites;
     LoaderCallbacks<String[]> callback = MainActivity.this;
 
 
@@ -142,8 +144,17 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
 */
             @Override
             public String[] loadInBackground() {
+
+                if(MainActivity.SHOW_FAVORITES) {
+                    ids = JsonUtils.getPosterIdsFromFavorites(MainActivity.this);
+                    favorites = new com.udacity.gregor.popularmovies.model.Movie[ids.length];
+                    for (int i = 0; i < ids.length; i++) {
+                        favorites[i] = JsonUtils.getMovieById(ids[i]);
+                    }
+                }
                 return JsonUtils.getPosterPaths(MainActivity.this);
             }
+
 
             @Override
             public void deliverResult(String[] data) {

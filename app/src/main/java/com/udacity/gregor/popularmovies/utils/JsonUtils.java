@@ -46,9 +46,10 @@ public class JsonUtils{
     private static final String JSON_KEY_KEY = "key";
 
     private static String apiString;
-    private static String requestJsonStringRecent;
+    public static String requestJsonStringRecent;
     public static String requestJsonStringMostPopular;
     public static String requestJsonStringBestRated;
+
     public static String[] keys;
     private static JSONArray resultsBestRatedArray = null;
     private static JSONArray resultsMostPopularArray = null;
@@ -86,6 +87,7 @@ public class JsonUtils{
         return ids;
 
     }
+
     public static String[] getPosterPaths(Context context) {
 
         posterPaths = new String[MainActivity.NUMBER_OF_SHOWN_RESULTS];
@@ -172,6 +174,8 @@ public class JsonUtils{
                 + MainActivity.API_KEY;
         requestUrl = NetworkUtils.buildUrl(apiString);
 
+        Log.i("apiString", apiString);
+
         try {
             requestJsonStringRecent = NetworkUtils.getResponseFromHttpUrl(requestUrl);
             JSONObject clickedMovieJson = new JSONObject(requestJsonStringRecent);
@@ -220,7 +224,14 @@ public class JsonUtils{
                 posterPath = resultsJsonMovie.getString(JSON_POSTER_PATH_KEY);
                 synopsis = resultsJsonMovie.getString(JSON_SYNOPSIS_KEY);
             } else if(MainActivity.SHOW_FAVORITES) {
-                id = ids[adapterPosition];
+                JSONObject recentMovieJson = new JSONObject(json);
+                id = recentMovieJson.getString(JSON_ID_KEY);
+                title = recentMovieJson.getString(JSON_TITLE_KEY);
+                voteAverage = recentMovieJson.getDouble(JSON_VOTE_Average_KEY);
+                releaseDate = recentMovieJson.getString(JSON_RELEASE_DATE_KEY);
+                posterPath = recentMovieJson.getString(JSON_POSTER_PATH_KEY);
+                synopsis = recentMovieJson.getString(JSON_SYNOPSIS_KEY);
+        /*        id = ids[adapterPosition];
                 Movie movie = JsonUtils.getMovieById(id);
 
                 title = movie.getMovieTitle();
@@ -228,6 +239,7 @@ public class JsonUtils{
                 releaseDate = movie.getReleaseDate();
                 posterPath = movie.getPosterPath();
                 synopsis = movie.getSynopsis();
+                */
             }
         } catch (JSONException e) {
             e.printStackTrace();
