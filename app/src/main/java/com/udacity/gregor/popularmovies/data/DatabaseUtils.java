@@ -36,13 +36,18 @@ public class DatabaseUtils {
         String posterPathString = movie.getPosterPath();
         String idString = movie.getId();
         String titleString = movie.getMovieTitle();
+        String releaseDateString = movie.getReleaseDate();
+        String overviewString = movie.getSynopsis();
+        double voteAverage = movie.getVoteAverage();
         if(posterPathString == null || idString == null || titleString == null) return;
-        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.MOVIE_POSTER_PATH, posterPathString);
+        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH, posterPathString);
         contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID, idString);
         contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_TITLE, titleString);
+        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE, releaseDateString);
+        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS, overviewString);
+        contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
 
         database.insert(FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME, null, contentValues);
-
     }
 
     public static void removeMovieFromFavorites(Movie movie, SQLiteDatabase database){

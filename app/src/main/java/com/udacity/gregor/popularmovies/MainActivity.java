@@ -144,15 +144,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
 */
             @Override
             public String[] loadInBackground() {
-
-                if(MainActivity.SHOW_FAVORITES) {
-                    ids = JsonUtils.getPosterIdsFromFavorites(MainActivity.this);
-                    favorites = new com.udacity.gregor.popularmovies.model.Movie[ids.length];
-                    for (int i = 0; i < ids.length; i++) {
-                        favorites[i] = JsonUtils.getMovieById(ids[i]);
-                    }
-                }
-                return JsonUtils.getPosterPaths(MainActivity.this);
+            return JsonUtils.getPosterPaths(MainActivity.this);
             }
 
 

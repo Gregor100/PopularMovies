@@ -36,6 +36,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
     String[] intentData;
     String posterPathString;
     String idString;
+    String titleString;
+    String overviewString;
+    String releaseDateString;
+    String voteAverageString;
     static ContentValues contentValues = new ContentValues();
     public static final int REVIEW_LOADER_ID = 5656;
     public static final int TRAILER_LOADER_ID = 7878;
@@ -87,11 +91,11 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         if(mainToDetailIntent.hasExtra(Intent.EXTRA_TEXT)){
             intentData = mainToDetailIntent.getStringArrayExtra(Intent.EXTRA_TEXT);
             idString = intentData[MainActivity.idPosition];
-            String titleString = intentData[MainActivity.titlePosition];
-            String overviewString = intentData[MainActivity.synopsisPosition];
-            String voteAverageString = intentData[MainActivity.voteAveragePosition];
+            titleString = intentData[MainActivity.titlePosition];
+            overviewString = intentData[MainActivity.synopsisPosition];
+            voteAverageString = intentData[MainActivity.voteAveragePosition];
             posterPathString = intentData[MainActivity.posterPathPosition];
-            String releaseDateString = intentData[MainActivity.releaseDatePosition];
+            releaseDateString = intentData[MainActivity.releaseDatePosition];
             title.setText(titleString);
             overview.setText(overviewString);
             voteAverage.setText(voteAverageString);
@@ -113,9 +117,10 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
         RecyclerView.LayoutManager trailerLayoutManager = new LinearLayoutManager(this);
         trailersRecyclerView.setLayoutManager(trailerLayoutManager);
 
-        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this, null);
+    //    FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(this);
 
-        mDatabase = dbHelper.getWritableDatabase();
+        mDatabase = FavoriteMoviesDbHelper.getInstance(this).getWritableDatabase();
+     //   mDatabase = dbHelper.getWritableDatabase();
     }
 
     @Override
@@ -191,7 +196,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
 
                 @Override
                 public String[] loadInBackground() {
-                    detailMovie = JsonUtils.getMovieById(idString);
+                    detailMovie = new Movie(titleString,
+                            Double.valueOf(voteAverageString),
+                            releaseDateString,
+                            posterPathString,
+                            overviewString,
+                            idString);
                     return JsonUtils.getPosterMovieReviews(DetailActivity.this, idString);
                 }
 

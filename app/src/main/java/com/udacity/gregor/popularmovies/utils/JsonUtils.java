@@ -69,7 +69,7 @@ public class JsonUtils{
                 FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID +
                 " FROM " +
                 FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME;
-        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(context, null);
+        FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(context);
         database = dbHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(favoritesDatabaseQuery, null);
 
@@ -133,15 +133,15 @@ public class JsonUtils{
             }
         } else if(MainActivity.SHOW_FAVORITES){
             final String favoritesDatabaseQuery = "SELECT " +
-                    FavoriteMoviesContract.FavoriteMovieEntry.MOVIE_POSTER_PATH +
+                    FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH +
                     " FROM " +
                     FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME;
-            FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(context, null);
+            FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(context);
             database = dbHelper.getReadableDatabase();
             Cursor cursor = database.rawQuery(favoritesDatabaseQuery, null);
 
             if(cursor != null) {
-                int columnIndex = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.MOVIE_POSTER_PATH);
+                int columnIndex = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH);
                 if (cursor.moveToFirst()) {
                     int i;
                     do {
@@ -192,7 +192,7 @@ public class JsonUtils{
         return new Movie(title,voteAverage,releaseDate,posterPath,synopsis, movieId);
     }
 
-    public static Movie getPosterMovie(String json, int adapterPosition) {
+    public static Movie getPosterMovie(String json, int adapterPosition, Context context) {
         String id = null;
         Double voteAverage = 0.0;
         String title = null;
@@ -224,22 +224,29 @@ public class JsonUtils{
                 posterPath = resultsJsonMovie.getString(JSON_POSTER_PATH_KEY);
                 synopsis = resultsJsonMovie.getString(JSON_SYNOPSIS_KEY);
             } else if(MainActivity.SHOW_FAVORITES) {
-                JSONObject recentMovieJson = new JSONObject(json);
-                id = recentMovieJson.getString(JSON_ID_KEY);
-                title = recentMovieJson.getString(JSON_TITLE_KEY);
-                voteAverage = recentMovieJson.getDouble(JSON_VOTE_Average_KEY);
-                releaseDate = recentMovieJson.getString(JSON_RELEASE_DATE_KEY);
-                posterPath = recentMovieJson.getString(JSON_POSTER_PATH_KEY);
-                synopsis = recentMovieJson.getString(JSON_SYNOPSIS_KEY);
-        /*        id = ids[adapterPosition];
-                Movie movie = JsonUtils.getMovieById(id);
+                final String favoritesDatabaseQuery = "SELECT * FROM " +
+                        FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME;
+                FavoriteMoviesDbHelper dbHelper = new FavoriteMoviesDbHelper(context);
+                database = dbHelper.getReadableDatabase();
+                Cursor cursor = database.rawQuery(favoritesDatabaseQuery, null);
 
-                title = movie.getMovieTitle();
-                voteAverage = movie.getVoteAverage();
-                releaseDate = movie.getReleaseDate();
-                posterPath = movie.getPosterPath();
-                synopsis = movie.getSynopsis();
-                */
+                if(cursor != null) {
+                    int columnIndexVoteAverage = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE);
+                    int columnIndexReleaseDate = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE);
+                    int columnIndexMovieTitle = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_TITLE);
+                    int columnIndexID = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID);
+                    int columnIndexOverview = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS);
+                    int columnIndexPosterPath = cursor.getColumnIndexOrThrow(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH);
+                    if (cursor.moveToPosition(adapterPosition)) {
+                        id = cursor.getString(columnIndexID);
+                        title = cursor.getString(columnIndexMovieTitle);
+                        voteAverage = cursor.getDouble(columnIndexVoteAverage);
+                        releaseDate = cursor.getString(columnIndexReleaseDate);
+                        posterPath = cursor.getString(columnIndexPosterPath);
+                        synopsis = cursor.getString(columnIndexOverview);
+                        cursor.close();
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

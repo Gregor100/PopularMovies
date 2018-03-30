@@ -51,17 +51,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             int adapterPosition = getAdapterPosition();
             Movie posterMovie;
             if(MainActivity.MOST_POPULAR) {
-                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringMostPopular, adapterPosition);
+                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringMostPopular, adapterPosition, null);
             } else if(MainActivity.BEST_RATED){
-                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringBestRated, adapterPosition);
+                posterMovie = JsonUtils.getPosterMovie(JsonUtils.requestJsonStringBestRated, adapterPosition, null);
             } else{
-                posterMovie = MainActivity.favorites[adapterPosition];
-           /*     String[] idsFromFavorites;
-                idsFromFavorites = JsonUtils.getPosterIdsFromFavorites(mMoviePoster.getContext());
-                String id = idsFromFavorites[adapterPosition];
-                posterMovie = JsonUtils.getMovieById(id);
-                Log.i("movieTitle", posterMovie.getMovieTitle());
-                */
+                posterMovie = JsonUtils.getPosterMovie(null, adapterPosition, mMoviePoster.getContext());
             }
             mClickHandler.onClick(posterMovie);
         }
