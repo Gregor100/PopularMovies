@@ -1,10 +1,13 @@
 package com.udacity.gregor.popularmovies.data;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.udacity.gregor.popularmovies.DetailActivity;
+import com.udacity.gregor.popularmovies.MainActivity;
 import com.udacity.gregor.popularmovies.model.Movie;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public class DatabaseUtils {
         }
         return false;
     }
-    public static void addMovieToFavorites(Movie movie, SQLiteDatabase database, ContentValues contentValues){
+    public static void addMovieToFavorites(Movie movie, SQLiteDatabase database, ContentValues contentValues, Context context){
 
         String posterPathString = movie.getPosterPath();
         String idString = movie.getId();
@@ -47,12 +50,17 @@ public class DatabaseUtils {
         contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS, overviewString);
         contentValues.put(FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
 
-        database.insert(FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME, null, contentValues);
+        context.getContentResolver().insert(FavoriteMoviesContract.FavoriteMovieEntry.CONTENT_URI,contentValues);
+     //   database.insert(FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME, null, contentValues);
     }
 
-    public static void removeMovieFromFavorites(Movie movie, SQLiteDatabase database){
+    public static void removeMovieFromFavorites(Movie movie, SQLiteDatabase database, Context context){
         String idString = movie.getId();
         if(idString == null) return;
+        context.getContentResolver().delete(FavoriteMoviesContract.FAVORITES_URI,
+                FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID + "=?",
+                new String[]{idString});
+        /*
         String favoriteQuery = "SELECT " + FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID +
                 " FROM " + FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME;
         Cursor cursor = database.rawQuery(favoriteQuery, null);
@@ -65,5 +73,6 @@ public class DatabaseUtils {
             } while(cursor.moveToNext());
             cursor.close();
         }
+        */
     }
 }

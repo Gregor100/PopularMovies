@@ -167,12 +167,12 @@ public class DetailActivity extends AppCompatActivity implements LoaderCallbacks
                     FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
                     FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
                 item.setIcon(R.drawable.full_star);
-                DatabaseUtils.addMovieToFavorites(detailMovie, mDatabase, contentValues);
+                DatabaseUtils.addMovieToFavorites(detailMovie, mDatabase, contentValues, getApplicationContext());
             }else if(DatabaseUtils.movieIsFavorite(idString, mDatabase,
                     FavoriteMoviesContract.FavoriteMovieEntry.TABLE_NAME,
                     FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID)) {
                 item.setIcon(R.drawable.empty_star);
-                DatabaseUtils.removeMovieFromFavorites(detailMovie, mDatabase);
+                DatabaseUtils.removeMovieFromFavorites(detailMovie, mDatabase, getApplicationContext());
             }
             return true;
         }

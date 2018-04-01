@@ -11,6 +11,7 @@ import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,6 +27,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+import com.udacity.gregor.popularmovies.data.FavoriteMoviesContract;
 import com.udacity.gregor.popularmovies.utils.JsonUtils;
 import com.udacity.gregor.popularmovies.utils.NetworkUtils;
 
@@ -72,6 +74,22 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     public static String[] ids = null;
     public static com.udacity.gregor.popularmovies.model.Movie[] favorites;
     LoaderCallbacks<String[]> callback = MainActivity.this;
+
+    String[] FAVORITES_PROJECTION = {
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID,
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_TITLE,
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE,
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS,
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH,
+            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE
+    };
+
+    public static final int INDEX_COLUMN_MOVIE_ID = 0;
+    public static final int INDEX_COLUMN_MOVIE_TITLE = 1;
+    public static final int INDEX_COLUMN_RELEASE_DATE = 2;
+    public static final int INDEX_COLUMN_SYNOPSIS = 3;
+    public static final int INDEX_COLUMN_MOVIE_POSTER_PATH = 4;
+    public static final int INDEX_COLUMN_VOTE_AVERAGE = 5;
 
 
 
@@ -144,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
 */
             @Override
             public String[] loadInBackground() {
-            return JsonUtils.getPosterPaths(MainActivity.this);
+                return JsonUtils.getPosterPaths(MainActivity.this);
             }
 
 
