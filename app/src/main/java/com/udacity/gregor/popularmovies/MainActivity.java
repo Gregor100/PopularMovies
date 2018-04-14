@@ -18,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
 
     public static final int SPAN_COUNT_GRID = 2;
     public static final int POSTER_LOADER_ID = 2323;
-    public static final String POSTER_LOADER_KEY = "poster_loader";
     public static final String BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String SIZE_POSTER = "w185/";
     public static boolean MOST_POPULAR = true;
@@ -71,27 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
     MovieAdapter mMovieAdapter;
     RecyclerView moviesRecyclerView;
     String[] posterPaths = null;
-    public static String[] ids = null;
-    public static com.udacity.gregor.popularmovies.model.Movie[] favorites;
     LoaderCallbacks<String[]> callback = MainActivity.this;
-
-    String[] FAVORITES_PROJECTION = {
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_ID,
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_TITLE,
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_RELEASE_DATE,
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_SYNOPSIS,
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_MOVIE_POSTER_PATH,
-            FavoriteMoviesContract.FavoriteMovieEntry.COLUMN_VOTE_AVERAGE
-    };
-
-    public static final int INDEX_COLUMN_MOVIE_ID = 0;
-    public static final int INDEX_COLUMN_MOVIE_TITLE = 1;
-    public static final int INDEX_COLUMN_RELEASE_DATE = 2;
-    public static final int INDEX_COLUMN_SYNOPSIS = 3;
-    public static final int INDEX_COLUMN_MOVIE_POSTER_PATH = 4;
-    public static final int INDEX_COLUMN_VOTE_AVERAGE = 5;
-
-
 
 
     @Override
@@ -102,9 +82,20 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
 
         moviesRecyclerView = findViewById(R.id.recyclerview_movies);
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this,
-                SPAN_COUNT_GRID);
+                numberOfColumns());
         moviesRecyclerView.setLayoutManager(gridLayoutManager);
         moviesRecyclerView.setHasFixedSize(true);
+    }
+
+    private int numberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        // You can change this divider to adjust the size of the poster
+        int widthDivider = 180;
+        int width = displayMetrics.widthPixels;
+        int nColumns = width / widthDivider;
+        if (nColumns < 2) return 2; //to keep the grid aspect
+        return nColumns;
     }
 
     @Override
@@ -198,12 +189,10 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<S
         Intent movieDetailIntent = new Intent(MainActivity.this, destinationClass);
         String[] intentData = new String[NUMBER_OF_INTENT_DETAILS];
         intentData[titlePosition] = posterMovie.getMovieTitle();
-        Log.i("posterMovieTitle",posterMovie.getMovieTitle());
         intentData[voteAveragePosition] = Double.toString(posterMovie.getVoteAverage());
         intentData[releaseDatePosition] = posterMovie.getReleaseDate();
         intentData[posterPathPosition] = posterMovie.getPosterPath();
         intentData[synopsisPosition] = posterMovie.getSynopsis();
-        Log.i("posterMovieId", posterMovie.getId());
         intentData[idPosition] = posterMovie.getId();
         movieDetailIntent.putExtra(Intent.EXTRA_TEXT,intentData);
         startActivity(movieDetailIntent);

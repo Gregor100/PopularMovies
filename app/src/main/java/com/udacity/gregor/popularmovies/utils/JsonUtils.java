@@ -99,6 +99,7 @@ public class JsonUtils{
                     + "?api_key="
                     + MainActivity.API_KEY;
             requestUrl = NetworkUtils.buildUrl(apiString);
+            Log.i("requesturl", requestUrl.toString());
             try {
                 requestJsonStringMostPopular = NetworkUtils.getResponseFromHttpUrl(requestUrl);
                 JSONObject popularOrBestRatedJson = new JSONObject(requestJsonStringMostPopular);
